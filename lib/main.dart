@@ -196,14 +196,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          Text(
-            'Active Project',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: kBrandBlue,
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-          const SizedBox(height: 8),
           ProjectStatusCard(
             projectName: 'Elegant Shop App',
             overallStatus: 'on_track',
