@@ -1060,11 +1060,6 @@ class PhaseDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Status Chip at top showing current status
-            Center(
-              child: StatusChip(status: status, label: statusLabel),
-            ),
-            const SizedBox(height: 24),
             Text(
               'Phase Overview',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
