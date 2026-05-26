@@ -139,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-/// DashboardScreen is the main portal page displaying active projects and SDLC phase cards.
+/// DashboardScreen is the main portal page displaying active projects and progress cards.
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -693,7 +693,7 @@ class ProjectStatusCard extends StatelessWidget {
   }
 }
 
-/// A Card widget for each SDLC phase shown on the dashboard.
+/// A Card widget for each phase shown on the dashboard.
 class PhaseCard extends StatelessWidget {
   final String phaseName;
   final String status;
@@ -985,7 +985,7 @@ class NotificationTile extends StatelessWidget {
   }
 }
 
-/// PhaseDetailScreen displays the detailed timeline, ownership and milestone checklist of a specific SDLC phase.
+/// PhaseDetailScreen displays the detailed timeline, ownership and milestone checklist of a specific project phase.
 class PhaseDetailScreen extends StatelessWidget {
   final String phaseName;
 
@@ -996,7 +996,7 @@ class PhaseDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determine info based on the selected phase for a realistic walkthrough
+    // Determine info based on the selected phase
     String status = 'pending';
     String statusLabel = 'Pending';
     String startDate = 'TBD';
@@ -1369,7 +1369,7 @@ class _MilestoneSummaryScreenState extends State<MilestoneSummaryScreen> {
   }
 }
 
-/// MilestoneApprovedScreen displays a gorgeous success verification after milestone sign-off.
+/// MilestoneApprovedScreen displays a success screen after milestone sign-off.
 class MilestoneApprovedScreen extends StatelessWidget {
   const MilestoneApprovedScreen({super.key});
 
@@ -1437,7 +1437,7 @@ class MilestoneApprovedScreen extends StatelessWidget {
   }
 }
 
-/// RequestChangesScreen captures student/client feedback to send to the project manager.
+/// RequestChangesScreen captures user feedback to send to the project manager.
 class RequestChangesScreen extends StatefulWidget {
   const RequestChangesScreen({super.key});
 
@@ -1474,7 +1474,7 @@ class _RequestChangesScreenState extends State<RequestChangesScreen> {
       ),
     );
 
-    // Navigate back to DashboardScreen and clear the stack to maintain fresh portal state
+    // Navigate back to DashboardScreen and clear the stack
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const DashboardScreen()),
