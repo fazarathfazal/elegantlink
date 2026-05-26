@@ -219,75 +219,72 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               );
             },
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'SDLC Progress',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: kBrandBlue,
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-          const SizedBox(height: 8),
-          PhaseCard(
-            phaseName: 'Discovery',
-            status: 'complete',
-            completionPercent: 100,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PhaseDetailScreen(
-                    phaseName: 'Discovery Phase',
-                  ),
-                ),
-              );
-            },
-          ),
-          PhaseCard(
-            phaseName: 'Design',
-            status: 'complete',
-            completionPercent: 100,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PhaseDetailScreen(
-                    phaseName: 'Design Phase',
-                  ),
-                ),
-              );
-            },
-          ),
-          PhaseCard(
-            phaseName: 'Development',
-            status: 'in_progress',
-            completionPercent: 65,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PhaseDetailScreen(
-                    phaseName: 'Development Phase',
-                  ),
-                ),
-              );
-            },
-          ),
-          PhaseCard(
-            phaseName: 'UAT',
-            status: 'pending',
-            completionPercent: 0,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PhaseDetailScreen(
-                    phaseName: 'UAT Phase',
-                  ),
-                ),
-              );
-            },
+            phases: [
+              PhaseCard(
+                phaseName: 'Discovery',
+                status: 'complete',
+                completionPercent: 100,
+                flat: true,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PhaseDetailScreen(
+                        phaseName: 'Discovery Phase',
+                      ),
+                    ),
+                  );
+                },
+              ),
+              PhaseCard(
+                phaseName: 'Design',
+                status: 'complete',
+                completionPercent: 100,
+                flat: true,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PhaseDetailScreen(
+                        phaseName: 'Design Phase',
+                      ),
+                    ),
+                  );
+                },
+              ),
+              PhaseCard(
+                phaseName: 'Development',
+                status: 'in_progress',
+                completionPercent: 65,
+                flat: true,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PhaseDetailScreen(
+                        phaseName: 'Development Phase',
+                      ),
+                    ),
+                  );
+                },
+              ),
+              PhaseCard(
+                phaseName: 'UAT',
+                status: 'pending',
+                completionPercent: 0,
+                flat: true,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PhaseDetailScreen(
+                        phaseName: 'UAT Phase',
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ],
       ),
@@ -602,6 +599,7 @@ class ProjectStatusCard extends StatelessWidget {
   final String overallStatus;
   final int completionPercent;
   final String nextMilestone;
+  final List<Widget> phases;
   final VoidCallback onTap;
 
   const ProjectStatusCard({
@@ -610,6 +608,7 @@ class ProjectStatusCard extends StatelessWidget {
     required this.overallStatus,
     required this.completionPercent,
     required this.nextMilestone,
+    required this.phases,
     required this.onTap,
   });
 
@@ -679,6 +678,16 @@ class ProjectStatusCard extends StatelessWidget {
               ),
               const Divider(height: 24),
               Text(
+                'Progress',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: kBrandBlue,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              const SizedBox(height: 8),
+              ...phases,
+              const Divider(height: 24),
+              Text(
                 'Next milestone: $nextMilestone',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: kStatusGrey,
@@ -697,6 +706,7 @@ class PhaseCard extends StatelessWidget {
   final String phaseName;
   final String status;
   final int completionPercent;
+  final bool flat;
   final VoidCallback onTap;
 
   const PhaseCard({
@@ -704,6 +714,7 @@ class PhaseCard extends StatelessWidget {
     required this.phaseName,
     required this.status,
     required this.completionPercent,
+    this.flat = false,
     required this.onTap,
   });
 
@@ -722,6 +733,49 @@ class PhaseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dotColor = _getStatusDotColor();
+    final childContent = Padding(
+      padding: EdgeInsets.all(flat ? 8.0 : 16.0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  phaseName,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ),
+              Text(
+                '$completionPercent%',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: kBrandLight,
+                    ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          LinearProgressIndicator(
+            value: completionPercent / 100,
+            backgroundColor: Colors.grey.shade200,
+            color: dotColor,
+            minHeight: 6,
+            borderRadius: BorderRadius.circular(3),
+          ),
+        ],
+      ),
+    );
+
+    if (flat) {
+      return InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: childContent,
+      );
+    }
+
     return Card(
       elevation: 1,
       margin: const EdgeInsets.symmetric(vertical: 6),
@@ -729,40 +783,7 @@ class PhaseCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      phaseName,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ),
-                  Text(
-                    '$completionPercent%',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: kBrandLight,
-                        ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              LinearProgressIndicator(
-                value: completionPercent / 100,
-                backgroundColor: Colors.grey.shade200,
-                color: dotColor,
-                minHeight: 6,
-                borderRadius: BorderRadius.circular(3),
-              ),
-            ],
-          ),
-        ),
+        child: childContent,
       ),
     );
   }
