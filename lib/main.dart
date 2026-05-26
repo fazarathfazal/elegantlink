@@ -1274,23 +1274,23 @@ class _MilestoneSummaryScreenState extends State<MilestoneSummaryScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
-                children: const [
+                children: [
                   CheckboxListTile(
                     value: true,
                     onChanged: null, // Hardcoded disabled checked state
-                    title: Text('Login and authentication screens'),
+                    title: const Text('Login and authentication screens'),
                   ),
-                  Divider(height: 1),
+                  const Divider(height: 1),
                   CheckboxListTile(
                     value: true,
                     onChanged: null,
-                    title: Text('Dashboard and phase overview screens'),
+                    title: const Text('Dashboard and phase overview screens'),
                   ),
-                  Divider(height: 1),
+                  const Divider(height: 1),
                   CheckboxListTile(
                     value: true,
                     onChanged: null,
-                    title: Text('Milestone review and approval screens'),
+                    title: const Text('Milestone review and approval screens'),
                   ),
                 ],
               ),
