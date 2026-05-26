@@ -148,14 +148,398 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  // Navigation helper for the NavigationBar tabs across the app
+  void _onTabTapped(int index) {
+    if (index == 0) {
+      // Already on Dashboard
+      return;
+    } else if (index == 1) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, anim1, anim2) => const ProjectsScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    } else if (index == 2) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, anim1, anim2) => const NotificationsScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Projects'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications_outlined),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificationsScreen(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
-      body: const Center(
-        child: Text('Dashboard placeholder'),
+      body: ListView(
+        padding: const EdgeInsets.all(16.0),
+        children: [
+          Text(
+            'Active Project',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: kBrandBlue,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 8),
+          ProjectStatusCard(
+            projectName: 'Elegant Shop App',
+            overallStatus: 'on_track',
+            completionPercent: 65,
+            nextMilestone: 'Core UI Screens',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PhaseDetailScreen(
+                    phaseName: 'Development Phase',
+                  ),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'SDLC Progress',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: kBrandBlue,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 8),
+          PhaseCard(
+            phaseName: 'Discovery',
+            status: 'complete',
+            completionPercent: 100,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PhaseDetailScreen(
+                    phaseName: 'Discovery Phase',
+                  ),
+                ),
+              );
+            },
+          ),
+          PhaseCard(
+            phaseName: 'Design',
+            status: 'complete',
+            completionPercent: 100,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PhaseDetailScreen(
+                    phaseName: 'Design Phase',
+                  ),
+                ),
+              );
+            },
+          ),
+          PhaseCard(
+            phaseName: 'Development',
+            status: 'in_progress',
+            completionPercent: 65,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PhaseDetailScreen(
+                    phaseName: 'Development Phase',
+                  ),
+                ),
+              );
+            },
+          ),
+          PhaseCard(
+            phaseName: 'UAT',
+            status: 'pending',
+            completionPercent: 0,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PhaseDetailScreen(
+                    phaseName: 'UAT Phase',
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: 0,
+        onDestinationSelected: _onTabTapped,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.assignment_outlined),
+            selectedIcon: Icon(Icons.assignment),
+            label: 'Projects',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.notifications_outlined),
+            selectedIcon: Icon(Icons.notifications),
+            label: 'Notifications',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// ProjectsScreen displays all projects the client is involved in.
+class ProjectsScreen extends StatefulWidget {
+  const ProjectsScreen({super.key});
+
+  @override
+  State<ProjectsScreen> createState() => _ProjectsScreenState();
+}
+
+class _ProjectsScreenState extends State<ProjectsScreen> {
+  void _onTabTapped(int index) {
+    if (index == 0) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, anim1, anim2) => const DashboardScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    } else if (index == 1) {
+      // Already on Projects
+      return;
+    } else if (index == 2) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, anim1, anim2) => const NotificationsScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Projects'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16.0),
+        children: [
+          // Project 1: Elegant Shop App (Active)
+          Card(
+            elevation: 1,
+            margin: const EdgeInsets.symmetric(vertical: 8),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: ListTile(
+              contentPadding: const EdgeInsets.all(16),
+              leading: const CircleAvatar(
+                backgroundColor: kBrandBlue,
+                foregroundColor: Colors.white,
+                child: Text('ES'),
+              ),
+              title: const Text(
+                'Elegant Shop App',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: const Text('Development Phase — 65% complete'),
+              trailing: const Icon(Icons.chevron_right, color: kBrandLight),
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const DashboardScreen(),
+                  ),
+                );
+              },
+            ),
+          ),
+          // Project 2: Marketing Website (Completed)
+          Card(
+            elevation: 1,
+            margin: const EdgeInsets.symmetric(vertical: 8),
+            color: Colors.grey.shade100, // Visual cue for completed/inactive status
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: ListTile(
+              contentPadding: const EdgeInsets.all(16),
+              enabled: false, // Disables tapping
+              leading: CircleAvatar(
+                backgroundColor: Colors.grey.shade400,
+                foregroundColor: Colors.white,
+                child: const Text('MW'),
+              ),
+              title: Text(
+                'Marketing Website',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              subtitle: Text(
+                'Launched 12 Jan 2025',
+                style: TextStyle(color: Colors.grey.shade500),
+              ),
+              trailing: const StatusChip(
+                status: 'complete',
+                label: 'Completed',
+              ),
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: 1,
+        onDestinationSelected: _onTabTapped,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.assignment_outlined),
+            selectedIcon: Icon(Icons.assignment),
+            label: 'Projects',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.notifications_outlined),
+            selectedIcon: Icon(Icons.notifications),
+            label: 'Notifications',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// NotificationsScreen displays recent push notifications the client has received.
+class NotificationsScreen extends StatefulWidget {
+  const NotificationsScreen({super.key});
+
+  @override
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State<NotificationsScreen> {
+  void _onTabTapped(int index) {
+    if (index == 0) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, anim1, anim2) => const DashboardScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    } else if (index == 1) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, anim1, anim2) => const ProjectsScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    } else if (index == 2) {
+      // Already on Notifications
+      return;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Notifications'),
+        // Explicit back button if opened from bell icon on DashboardScreen
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.pop(context),
+              )
+            : null,
+      ),
+      body: ListView(
+        children: [
+          NotificationTile(
+            title: 'Milestone Ready for Review',
+            body: 'Core UI Screens is ready for your approval.',
+            time: 'Today, 9:14 AM',
+            isUnread: true,
+          ),
+          NotificationTile(
+            title: 'New Mockup Uploaded',
+            body: 'James R. uploaded Login Screen v3 for your review.',
+            time: 'Today, 8:50 AM',
+            isUnread: true,
+          ),
+          NotificationTile(
+            title: 'Phase Status Updated',
+            body: 'Development phase is now 65% complete.',
+            time: 'Yesterday, 4:30 PM',
+            isUnread: false,
+          ),
+          NotificationTile(
+            title: 'Comment Reply',
+            body: 'James R. replied to your comment on the Login mockup.',
+            time: 'Yesterday, 2:10 PM',
+            isUnread: false,
+          ),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: 2,
+        onDestinationSelected: _onTabTapped,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.assignment_outlined),
+            selectedIcon: Icon(Icons.assignment),
+            label: 'Projects',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.notifications_outlined),
+            selectedIcon: Icon(Icons.notifications),
+            label: 'Notifications',
+          ),
+        ],
       ),
     );
   }
