@@ -638,18 +638,7 @@ class ProjectStatusCard extends StatelessWidget {
     required this.onTap,
   });
 
-  String _getStatusLabel() {
-    switch (overallStatus) {
-      case 'on_track':
-        return 'On Track';
-      case 'at_risk':
-        return 'At Risk';
-      case 'blocked':
-        return 'Blocked';
-      default:
-        return 'Unknown';
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -1034,8 +1023,6 @@ class PhaseDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Determine info based on the selected phase
-    String status = 'pending';
-    String statusLabel = 'Pending';
     String startDate = 'TBD';
     String endDate = 'TBD';
     String completion = '0%';
@@ -1043,8 +1030,6 @@ class PhaseDetailScreen extends StatelessWidget {
     List<Map<String, String>> milestones = [];
 
     if (phaseName.contains('Discovery')) {
-      status = 'complete';
-      statusLabel = 'Complete';
       startDate = '10 Mar 2025';
       endDate = '25 Mar 2025';
       completion = '100%';
@@ -1054,8 +1039,6 @@ class PhaseDetailScreen extends StatelessWidget {
         {'name': 'Scope Definition', 'status': 'approved'},
       ];
     } else if (phaseName.contains('Design')) {
-      status = 'complete';
-      statusLabel = 'Complete';
       startDate = '1 Apr 2025';
       endDate = '30 Apr 2025';
       completion = '100%';
@@ -1065,8 +1048,6 @@ class PhaseDetailScreen extends StatelessWidget {
         {'name': 'High-Fidelity Mockups', 'status': 'approved'},
       ];
     } else if (phaseName.contains('Development')) {
-      status = 'in_progress';
-      statusLabel = 'In Progress';
       startDate = '12 May 2025';
       endDate = '30 Jun 2025';
       completion = '65%';
@@ -1077,8 +1058,6 @@ class PhaseDetailScreen extends StatelessWidget {
         {'name': 'Push Notifications', 'status': 'in_progress'},
       ];
     } else if (phaseName.contains('UAT')) {
-      status = 'pending';
-      statusLabel = 'Pending';
       startDate = '1 Jul 2025';
       endDate = '20 Jul 2025';
       completion = '0%';
