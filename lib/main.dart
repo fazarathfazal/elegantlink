@@ -488,24 +488,58 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             body: 'Core UI Screens is ready for your approval.',
             time: 'Today, 9:14 AM',
             isUnread: true,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MilestoneSummaryScreen(),
+                ),
+              );
+            },
           ),
           NotificationTile(
             title: 'New Mockup Uploaded',
             body: 'James R. uploaded Login Screen v3 for your review.',
             time: 'Today, 8:50 AM',
             isUnread: true,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MockupViewerScreen(),
+                ),
+              );
+            },
           ),
           NotificationTile(
             title: 'Phase Status Updated',
             body: 'Development phase is now 65% complete.',
             time: 'Yesterday, 4:30 PM',
             isUnread: false,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PhaseDetailScreen(
+                    phaseName: 'Development Phase',
+                  ),
+                ),
+              );
+            },
           ),
           NotificationTile(
             title: 'Comment Reply',
             body: 'James R. replied to your comment on the Login mockup.',
             time: 'Yesterday, 2:10 PM',
             isUnread: false,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MockupViewerScreen(),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -938,6 +972,7 @@ class NotificationTile extends StatelessWidget {
   final String body;
   final String time;
   final bool isUnread;
+  final VoidCallback? onTap;
 
   const NotificationTile({
     super.key,
@@ -945,11 +980,13 @@ class NotificationTile extends StatelessWidget {
     required this.body,
     required this.time,
     required this.isUnread,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final tile = ListTile(
+      onTap: onTap,
       leading: Icon(
         Icons.notifications,
         color: isUnread ? kBrandLight : kStatusGrey,
