@@ -654,11 +654,6 @@ class ProjectStatusCard extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
-                        const SizedBox(height: 8),
-                        StatusChip(
-                          status: overallStatus,
-                          label: _getStatusLabel(),
-                        ),
                       ],
                     ),
                   ),
@@ -740,15 +735,6 @@ class PhaseCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: dotColor,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       phaseName,
