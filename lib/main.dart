@@ -62,9 +62,100 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      backgroundColor: kSurface,
       body: Center(
-        child: Text('ElegantLink Initializing...'),
+        // Wrap in SingleChildScrollView to prevent overflow when keyboard appears
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Logo Placeholder using Icons.link in brand color
+              const Icon(
+                Icons.link,
+                size: 64,
+                color: kBrandBlue,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'ElegantLink',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                      color: kBrandBlue,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Project Transparency Portal',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: kStatusGrey,
+                    ),
+              ),
+              const SizedBox(height: 48),
+              TextField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  labelText: 'Email address',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.email_outlined),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.lock_outlined),
+                ),
+              ),
+              const SizedBox(height: 24),
+              FilledButton(
+                onPressed: () {
+                  // Navigate to DashboardScreen, replace the current route
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DashboardScreen(),
+                    ),
+                  );
+                },
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12.0),
+                  child: Text('Sign In'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// DashboardScreen is the main portal page displaying active projects and SDLC phase cards.
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('My Projects'),
+      ),
+      body: const Center(
+        child: Text('Dashboard placeholder'),
       ),
     );
   }
