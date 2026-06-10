@@ -9,8 +9,115 @@ const Color kStatusRed    = Color(0xFFD32F2F); // blocked
 const Color kStatusGrey   = Color(0xFF9E9E9E); // pending / read
 const Color kSurface      = Color(0xFFF7FBFF); // background surface
 
+/// Item representing a push notification.
+class NotificationItem {
+  final String title;
+  final String body;
+  final String time;
+  bool isUnread;
+
+  NotificationItem({
+    required this.title,
+    required this.body,
+    required this.time,
+    required this.isUnread,
+  });
+}
+
 void main() {
-  runApp(const ElegantLinkApp());
+  runApp(const ElegantLinkAppState(child: ElegantLinkApp()));
+}
+
+/// A stateful wrapper that hosts the global app state.
+class ElegantLinkAppState extends StatefulWidget {
+  final Widget child;
+  const ElegantLinkAppState({super.key, required this.child});
+
+  @override
+  State<ElegantLinkAppState> createState() => ElegantLinkAppStateState();
+}
+
+class ElegantLinkAppStateState extends State<ElegantLinkAppState> {
+  int completionPercent = 65;
+  String milestoneStatus = 'ready_for_review'; // 'ready_for_review' or 'approved'
+  
+  late List<NotificationItem> notifications;
+
+  @override
+  void initState() {
+    super.initState();
+    notifications = [
+      NotificationItem(
+        title: 'Milestone Ready for Review',
+        body: 'Core UI Screens is ready for your approval.',
+        time: 'Today, 9:14 AM',
+        isUnread: true,
+      ),
+      NotificationItem(
+        title: 'New Mockup Uploaded',
+        body: 'James R. uploaded Login Screen v3 for your review.',
+        time: 'Today, 8:50 AM',
+        isUnread: true,
+      ),
+      NotificationItem(
+        title: 'Phase Status Updated',
+        body: 'Development phase is now 65% complete.',
+        time: 'Yesterday, 4:30 PM',
+        isUnread: false,
+      ),
+      NotificationItem(
+        title: 'Comment Reply',
+        body: 'James R. replied to your comment on the Login mockup.',
+        time: 'Yesterday, 2:10 PM',
+        isUnread: false,
+      ),
+    ];
+  }
+
+  void markNotificationAsRead(int index) {
+    setState(() {
+      notifications[index].isUnread = false;
+    });
+  }
+
+  int get unreadNotificationsCount {
+    return notifications.where((n) => n.isUnread).length;
+  }
+
+  void approveCoreMilestone() {
+    setState(() {
+      milestoneStatus = 'approved';
+      completionPercent = 80; // Project updates completion dynamically when approved
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppStateProvider(
+      state: this,
+      child: widget.child,
+    );
+  }
+}
+
+/// InheritedWidget that provides the ElegantLinkAppStateState down the tree.
+class AppStateProvider extends InheritedWidget {
+  final ElegantLinkAppStateState state;
+
+  const AppStateProvider({
+    super.key,
+    required this.state,
+    required super.child,
+  });
+
+  static ElegantLinkAppStateState of(BuildContext context) {
+    final provider = context.dependOnInheritedWidgetOfExactType<AppStateProvider>();
+    assert(provider != null, 'No AppStateProvider found in context');
+    return provider!.state;
+  }
+
+  @override
+  bool updateShouldNotify(AppStateProvider oldWidget) => true;
 }
 
 /// The root widget of the ElegantLink application.
