@@ -1343,9 +1343,7 @@ class PhaseDetailScreen extends StatelessWidget {
                     if (m['status'] == 'ready_for_review') {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const MilestoneSummaryScreen(),
-                        ),
+                        createSlideRoute(const MilestoneSummaryScreen()),
                       );
                     }
                   },
@@ -1525,9 +1523,7 @@ class _MilestoneSummaryScreenState extends State<MilestoneSummaryScreen> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const MockupViewerScreen(),
-                        ),
+                        createSlideRoute(const MockupViewerScreen()),
                       );
                     },
                   ),
