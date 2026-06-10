@@ -1373,8 +1373,11 @@ class _MilestoneSummaryScreenState extends State<MilestoneSummaryScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirm Milestone Approval'),
+          // A3 usability finding: participants (P2) were unsure whether approval
+          // had a financial consequence. Dialog now explicitly states the
+          // payment implication to satisfy Nielsen's error-prevention heuristic.
           content: const Text(
-            'Approving this milestone will mark it as complete and notify your Project Manager. This action cannot be undone.',
+            'Approving this milestone confirms that Core UI Screens meet your requirements and will release the next payment instalment to Elegant Media. This action cannot be undone.',
           ),
           actions: [
             TextButton(
