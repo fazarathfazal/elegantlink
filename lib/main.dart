@@ -1073,16 +1073,23 @@ class MilestoneListTile extends StatelessWidget {
 }
 
 /// A custom widget for a single comment in a comment thread.
+/// Accepts an optional [isJustPosted] flag to display a brief
+/// 'Just posted' badge — added in A3 iteration to supplement the
+/// transient Snackbar with persistent in-thread visual confirmation.
 class CommentTile extends StatelessWidget {
   final String authorName;
   final String commentText;
   final String timeAgo;
+  // A3 Rec. 3: when true, renders a 'Just posted' amber badge next
+  // to the timestamp to confirm the comment landed in the thread.
+  final bool isJustPosted;
 
   const CommentTile({
     super.key,
     required this.authorName,
     required this.commentText,
     required this.timeAgo,
+    this.isJustPosted = false,
   });
 
   @override
@@ -1118,11 +1125,23 @@ class CommentTile extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                   ),
-                  Text(
-                    timeAgo,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: kStatusGrey,
+                  Row(
+                    children: [
+                      Text(
+                        timeAgo,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: kStatusGrey,
+                            ),
+                      ),
+                      // Persistent badge shown for 3 s after posting (A3 Rec. 3)
+                      if (isJustPosted) ...[
+                        const SizedBox(width: 8),
+                        const StatusChip(
+                          status: 'ready_for_review',
+                          label: '✓ Just posted',
                         ),
+                      ],
+                    ],
                   ),
                 ],
               ),
@@ -1790,6 +1809,10 @@ class _MockupViewerScreenState extends State<MockupViewerScreen> {
   final TextEditingController _commentController = TextEditingController();
   final FocusNode _commentFocusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
+  // A3 usability finding (Rec. 3): tracks index of most recently posted comment
+  // so a persistent 'Just posted' badge can be shown in-thread, supplementing
+  // the transient Snackbar which P1 found dismissed before they finished reading.
+  int? _justPostedIndex;
 
   final List<Map<String, String>> _comments = [
     {
@@ -1816,20 +1839,25 @@ class _MockupViewerScreenState extends State<MockupViewerScreen> {
     final text = _commentController.text.trim();
     if (text.isEmpty) return;
 
+    final newIndex = _comments.length; // index of the comment about to be added
     setState(() {
       _comments.add({
         'author': 'Fred M.', // Current logged in user as per specs
         'text': text,
         'time': 'Just now',
       });
+      _justPostedIndex = newIndex; // mark badge on the newly posted comment
     });
 
     _commentController.clear();
     FocusScope.of(context).unfocus();
 
+    // Extended to 4 s — A3 finding: P1 noted the default brief Snackbar
+    // dismissed before they had finished reading the confirmation text.
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Comment posted'),
+        content: Text('Comment posted — your feedback has been sent to James R.'),
+        duration: Duration(seconds: 4),
       ),
     );
 
@@ -1841,6 +1869,15 @@ class _MockupViewerScreenState extends State<MockupViewerScreen> {
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
+      }
+    });
+
+    // Clear the 'Just posted' badge after 3 seconds so it doesn't persist forever
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          _justPostedIndex = null;
+        });
       }
     });
   }
@@ -1906,12 +1943,16 @@ class _MockupViewerScreenState extends State<MockupViewerScreen> {
               ],
             ),
             const SizedBox(height: 8),
-            // Comments thread list
-            ..._comments.map((c) {
+            // Comments thread list — passes isJustPosted to the newest comment
+            // to render the persistent 'Just posted' badge (A3 Rec. 3)
+            ..._comments.asMap().entries.map((entry) {
+              final index = entry.key;
+              final c = entry.value;
               return CommentTile(
                 authorName: c['author']!,
                 commentText: c['text']!,
                 timeAgo: c['time']!,
+                isJustPosted: index == _justPostedIndex,
               );
             }),
             const SizedBox(height: 16),
