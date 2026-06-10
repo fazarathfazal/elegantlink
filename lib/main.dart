@@ -1211,7 +1211,9 @@ class PhaseDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determine info based on the selected phase
+    final appState = AppStateProvider.of(context);
+    final isApproved = appState.milestoneStatus == 'approved';
+
     String startDate = 'TBD';
     String endDate = 'TBD';
     String completion = '0%';
@@ -1239,20 +1241,20 @@ class PhaseDetailScreen extends StatelessWidget {
     } else if (phaseName.contains('Development')) {
       startDate = '12 May 2025';
       endDate = '30 Jun 2025';
-      completion = '65%';
+      completion = isApproved ? '100%' : '${appState.completionPercent}%';
       owner = 'James R. — Elegant Media';
       milestones = [
         {'name': 'API Integration', 'status': 'approved'},
-        {'name': 'Core UI Screens', 'status': 'ready_for_review'},
+        {'name': 'Core UI Screens', 'status': appState.milestoneStatus},
         {'name': 'Push Notifications', 'status': 'in_progress'},
       ];
     } else if (phaseName.contains('UAT')) {
       startDate = '1 Jul 2025';
       endDate = '20 Jul 2025';
-      completion = '0%';
+      completion = isApproved ? '10%' : '0%';
       owner = 'James R. — Elegant Media';
       milestones = [
-        {'name': 'User Sign-Off', 'status': 'in_progress'},
+        {'name': 'User Sign-Off', 'status': isApproved ? 'in_progress' : 'pending'},
       ];
     }
 
@@ -1383,12 +1385,12 @@ class _MilestoneSummaryScreenState extends State<MilestoneSummaryScreen> {
             ),
             FilledButton(
               onPressed: () {
+                // Trigger global state updates
+                AppStateProvider.of(context).approveCoreMilestone();
                 Navigator.pop(context); // Close the dialog
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const MilestoneApprovedScreen(),
-                  ),
+                  createSlideRoute(const MilestoneApprovedScreen()),
                 );
               },
               child: const Text('Yes, Approve'),
@@ -1421,8 +1423,8 @@ class _MilestoneSummaryScreenState extends State<MilestoneSummaryScreen> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
+                      children: [
+                        const Text(
                           'Core UI Screens',
                           style: TextStyle(
                             fontSize: 20,
@@ -1431,8 +1433,8 @@ class _MilestoneSummaryScreenState extends State<MilestoneSummaryScreen> {
                           ),
                         ),
                         StatusChip(
-                          status: 'ready_for_review',
-                          label: 'Ready for Review',
+                          status: AppStateProvider.of(context).milestoneStatus,
+                          label: AppStateProvider.of(context).milestoneStatus == 'approved' ? 'Approved' : 'Ready for Review',
                         ),
                       ],
                     ),
@@ -1534,39 +1536,44 @@ class _MilestoneSummaryScreenState extends State<MilestoneSummaryScreen> {
             ),
             const SizedBox(height: 32),
             // Bottom Action buttons
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const RequestChangesScreen(),
+            AppStateProvider.of(context).milestoneStatus == 'approved'
+                ? const Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      child: StatusChip(status: 'approved', label: 'Milestone Approved & Confirmed'),
+                    ),
+                  )
+                : Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              createSlideRoute(const RequestChangesScreen()),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            side: const BorderSide(color: kStatusRed),
+                            foregroundColor: kStatusRed,
+                          ),
+                          child: const Text('Request Changes'),
                         ),
-                      );
-                    },
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: const BorderSide(color: kStatusRed),
-                      foregroundColor: kStatusRed,
-                    ),
-                    child: const Text('Request Changes'),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: _showApprovalDialog,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: kStatusGreen,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                          ),
+                          child: const Text('Approve Milestone'),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: FilledButton(
-                    onPressed: _showApprovalDialog,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: kStatusGreen,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    child: const Text('Approve Milestone'),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),
