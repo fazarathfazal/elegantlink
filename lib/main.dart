@@ -1611,6 +1611,21 @@ class MilestoneApprovedScreen extends StatelessWidget {
                     ),
               ),
               const SizedBox(height: 16),
+              // A3 usability finding (Rec. 4): P2 briefly hesitated on this screen
+              // because the back arrow is hidden. This caption explains why and
+              // guides users to the only available exit action, consistent with
+              // Material3 confirmation screen patterns.
+              const Text(
+                'Your approval has been recorded. Use the button below to return to your project dashboard.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: kBrandBlue,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 12),
               const Text(
                 'Core UI Screens has been approved. James R. has been notified and the next development phase will begin shortly.',
                 textAlign: TextAlign.center,
